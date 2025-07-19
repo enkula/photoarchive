@@ -59,6 +59,31 @@ function openFullscreenImage(index) {
   fullscreenViewer.innerHTML = '';
   const item = fullscreenImages[index];
 
+  // Create info container
+  const infoDiv = document.createElement('div');
+  infoDiv.style.color = 'white';
+  infoDiv.style.padding = '10px 20px';
+  infoDiv.style.position = 'absolute';
+  infoDiv.style.top = '10px';
+  infoDiv.style.left = '50%';
+  infoDiv.style.transform = 'translateX(-50%)';
+  infoDiv.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+  infoDiv.style.borderRadius = '6px';
+  infoDiv.style.fontSize = '1rem';
+  infoDiv.style.zIndex = '10000';
+  infoDiv.style.maxWidth = '90vw';
+  infoDiv.style.textAlign = 'center';
+
+  
+  // Show full path and date (assuming item has 'path' and 'date' properties)
+  // If you don't have full path, you can build it or add to your data
+  const displayPath = item.path || item.name; // fallback to name if no path
+  const displayDate = item.date ? new Date(item.date).toLocaleString('fi-FI') : 'Unknown date';
+
+  infoDiv.textContent = `${displayPath} — ${displayDate}`;
+
+  fullscreenViewer.appendChild(infoDiv);
+  
   if (item.type === 'video' || item.url.match(/\.(mp4|webm|ogg)$/i)) {
     // Create video element
     const video = document.createElement('video');

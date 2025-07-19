@@ -68,7 +68,8 @@ function scanDirRecursive(dir, base = '') {
         url: `/media/${relPath}`,
         thumbnail: `/thumbnails/${relPath}.jpg`,
         isVideo: VIDEO_EXTS.includes(ext),
-        date: stats.mtime.toISOString()  // modification date in ISO format
+        date: stats.mtime.toISOString(),  // modification date in ISO format
+        path: relPath
       });
     }
   });
