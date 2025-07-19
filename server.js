@@ -60,13 +60,15 @@ function scanDirRecursive(dir, base = '') {
         result.push({ name: entry.name, type: 'folder', items: children });
       }
     } else if (IMAGE_EXTS.concat(VIDEO_EXTS).includes(ext)) {
+      const stats = fs.statSync(fullPath);
       generateThumbnail(fullPath, relPath, ext);
       result.push({
         name: entry.name,
         type: 'file',
         url: `/media/${relPath}`,
         thumbnail: `/thumbnails/${relPath}.jpg`,
-        isVideo: VIDEO_EXTS.includes(ext)
+        isVideo: VIDEO_EXTS.includes(ext),
+        date: stats.mtime.toISOString()  // modification date in ISO format
       });
     }
   });

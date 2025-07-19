@@ -3,7 +3,13 @@ let currentIndex = 0;
 const fullscreenViewer = document.getElementById('fullscreen-viewer');
 
 async function loadGallery() {
-  const res = await fetch('/api/media-tree');
+  const res = await fetch('/api/media-tree')
+	.then(res => res.json())
+	.then(data => {
+	  const groupedTree = groupMediaByDateRecursively(data);
+	  renderTree(groupedTree, document.getElementById('gallery'));
+	})
+	.catch(console.error);
   const data = await res.json();
   const container = document.getElementById('gallery');
   container.innerHTML = '';
@@ -110,5 +116,40 @@ fullscreenViewer.addEventListener('touchend', e => {
 // Close fullscreen on tap
 fullscreenViewer.addEventListener('click', closeFullscreen);
 
+function groupMediaByDateRecursively(items) {
+  // Separate files and folders
+  const files = items.filter(i => i.type === 'file');
+  const folders = items.filter(i => i.type === 'folder');
+
+  // Group files by date
+  const dateGroups = {};
+  files.forEach(file => {
+    if (!file.date) {
+      // If no date, fallback group
+      if (!dateGroups['No Date']) dateGroups['No Date'] = [];
+      dateGroups['No Date'].push(file);
+    } else {
+      const dateKey = file.date.slice(0, 10); // 'YYYY-MM-DD'
+      if (!dateGroups[dateKey]) dateGroups[dateKey] = [];
+      dateGroups[dateKey].push(file);
+    }
+  });
+
+  // Convert dateGroups to folder-like objects
+  const groupedDateFolders = Object.entries(dateGroups).map(([date, items]) => ({
+    name: date,
+    type: 'folder',
+    items,
+  }));
+
+  // Recurse on subfolders
+  const processedFolders = folders.map(folder => ({
+    ...folder,
+    items: groupMediaByDateRecursively(folder.items),
+  }));
+
+  // Return combined array: date folders + original folders
+  return [...groupedDateFolders, ...processedFolders];
+}
 
 loadGallery();
