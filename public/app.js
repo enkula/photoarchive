@@ -25,7 +25,7 @@ function renderTree(items, container) {
         img.src = item.thumbnail;
         img.alt = item.name;
         img.classList.add('thumbnail');
-
+	
         // Attach click to open fullscreen with index in full list
         img.onclick = () => openFullscreenImage(index);
 

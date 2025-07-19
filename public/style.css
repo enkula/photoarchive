@@ -1,4 +1,4 @@
-body {
+.body {
   font-family: sans-serif;
   background: #f4f4f4;
   margin: 0;
@@ -6,13 +6,6 @@ body {
 }
 h1 {
   text-align: center;
-}
-.folder {
-  margin-bottom: 2rem;
-}
-.folder h2 {
-  margin-top: 1rem;
-  margin-bottom: 0.5rem;
 }
 .media-grid {
   display: flex;
@@ -43,4 +36,41 @@ h1 {
   max-width: 90%;
   max-height: 90%;
   user-select: none;
+}
+
+/* Make thumbnails smaller */
+.thumbnail {
+  width: 100px;       /* smaller width */
+  height: auto;
+  margin: 5px;
+  cursor: pointer;
+  border-radius: 4px;
+  object-fit: cover;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+  transition: transform 0.2s ease;
+}
+
+.thumbnail:hover {
+  transform: scale(1.1);
+}
+
+/* Make folders more visible */
+.folder {
+  font-weight: bold;
+  font-size: 1.2em;
+  margin: 10px 0 5px 0;
+  padding: 4px 8px;
+  background-color: #f0f0f0;
+  border-radius: 6px;
+  user-select: none;
+}
+.folder h2 {
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+#gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 }
