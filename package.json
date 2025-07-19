@@ -1,0 +1,13 @@
+{
+  "name": "photo-gallery-app",
+  "version": "1.0.0",
+  "description": "Node.js photo/video gallery with thumbnails and lazy loading",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "sharp": "^0.33.2"
+  }
+}

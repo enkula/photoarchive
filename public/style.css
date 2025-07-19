@@ -1,0 +1,29 @@
+body {
+  font-family: sans-serif;
+  background: #f4f4f4;
+  margin: 0;
+  padding: 1rem;
+}
+h1 {
+  text-align: center;
+}
+.folder {
+  margin-bottom: 2rem;
+}
+.folder h2 {
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+.media-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.media-item img,
+.media-item video {
+  max-width: 200px;
+  max-height: 150px;
+  border-radius: 6px;
+  object-fit: cover;
+  cursor: pointer;
+}
