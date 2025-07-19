@@ -10,73 +10,69 @@ async function loadGallery() {
   renderTree(data, container);
 }
 
-function renderTree(items, container, folderName = '') {
-  const folder = document.createElement('div');
-  folder.className = 'folder';
+function renderTree(items, container) {
+  fullscreenImages = []; // Reset on every render
 
-  if (folderName) {
-    const title = document.createElement('h2');
-    title.textContent = folderName;
-    folder.appendChild(title);
-  }
+  function recurseRender(items, parent) {
+    items.forEach((item) => {
+      if (item.type === 'file') {
+        // Add image to fullscreenImages list
+        fullscreenImages.push(item);
+        const index = fullscreenImages.length - 1;
 
-  const grid = document.createElement('div');
-  grid.className = 'media-grid';
-
-  items.forEach(item => {
-    if (item.type === 'file') {
-      const wrapper = document.createElement('div');
-      wrapper.className = 'media-item';
-
-      if (item.isVideo) {
-        const preview = document.createElement('img');
-        preview.src = item.thumbnail;
-        preview.loading = 'lazy';
-        preview.onclick = () => {
-          const video = document.createElement('video');
-          video.src = item.url;
-          video.controls = true;
-          video.autoplay = true;
-          video.style.maxWidth = '200px';
-          video.style.maxHeight = '150px';
-          wrapper.innerHTML = '';
-          wrapper.appendChild(video);
-        };
-        wrapper.appendChild(preview);
-      } else {
+        // Create thumbnail img element
         const img = document.createElement('img');
         img.src = item.thumbnail;
-        img.loading = 'lazy';
-        img.onclick = () => {
-	  fullscreenImages.push(item);
-	  const index = fullscreenImages.length - 1;
-	  img.onclick = () => openFullscreenImage(index)
-        };
-        wrapper.appendChild(img);
+        img.alt = item.name;
+        img.classList.add('thumbnail');
+
+        // Attach click to open fullscreen with index in full list
+        img.onclick = () => openFullscreenImage(index);
+
+        parent.appendChild(img);
+
+      } else if (item.type === 'folder') {
+        // Create folder container (optional UI)
+        const folderDiv = document.createElement('div');
+        folderDiv.classList.add('folder');
+        folderDiv.textContent = item.name;
+        parent.appendChild(folderDiv);
+
+        // Recurse into folder
+        recurseRender(item.items, folderDiv);
       }
-
-      grid.appendChild(wrapper);
-    } else if (item.type === 'folder') {
-      renderTree(item.items, container, item.name);
-    }
-  });
-
-  if (grid.children.length > 0) {
-    folder.appendChild(grid);
-    container.appendChild(folder);
+    });
   }
+
+  container.innerHTML = ''; // Clear container before render
+  recurseRender(items, container);
 }
 
 function openFullscreenImage(index) {
   currentIndex = index;
   fullscreenViewer.innerHTML = '';
-  const img = document.createElement('img');
-  img.src = fullscreenImages[index].url;
-  fullscreenViewer.appendChild(img);
-  fullscreenViewer.style.display = 'flex';
+  const item = fullscreenImages[index];
 
+  if (item.type === 'video' || item.url.match(/\.(mp4|webm|ogg)$/i)) {
+    // Create video element
+    const video = document.createElement('video');
+    video.src = item.url;
+    video.controls = true;
+    video.autoplay = true;
+    video.style.maxWidth = '90%';
+    video.style.maxHeight = '90%';
+    fullscreenViewer.appendChild(video);
+  } else {
+    // Create image element
+    const img = document.createElement('img');
+    img.src = item.url;
+    fullscreenViewer.appendChild(img);
+  }
+
+  fullscreenViewer.style.display = 'flex';
   document.addEventListener('keydown', onKeyDown);
 }
+
 
 function closeFullscreen() {
   fullscreenViewer.style.display = 'none';
